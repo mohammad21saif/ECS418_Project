@@ -25,3 +25,4 @@ python shepherding.py
 
 ## GIF Output
 The simulation will generate a GIF file named `herding_simulation.gif` in the current directory.
+![Herding Simulation GIF](herding_simulation.gif)
