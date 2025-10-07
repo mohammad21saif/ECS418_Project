@@ -270,12 +270,18 @@ class Herding:
                 dog_plot.set_data([], [])
             return sheep_plots + dog_plots + [goal_plot]
 
+
         def update(frame):
             for i, sheep_plot in enumerate(sheep_plots):
-                sheep_plot.set_data(self.sheep_positions[i][frame, 0], self.sheep_positions[i][frame, 1])
+                x, y = self.sheep_positions[i][frame, 0], self.sheep_positions[i][frame, 1]
+                sheep_plot.set_data([x], [y])
+
             for j, dog_plot in enumerate(dog_plots):
-                dog_plot.set_data(self.dog_states[j][frame, 0], self.dog_states[j][frame, 1])
+                x, y = self.dog_states[j][frame, 0], self.dog_states[j][frame, 1]
+                dog_plot.set_data([x], [y]) 
+
             return sheep_plots + dog_plots + [goal_plot]
+
     
         ani = animation.FuncAnimation(fig, update, frames=self.actual_iters, init_func=init, blit=True, interval=50)
         plt.show()
