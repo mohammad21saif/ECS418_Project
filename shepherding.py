@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 
 class Herding:
-    def __init__(self, num_sheeps, num_dogs, grid_size, sheep_positions, dog_states, goal_position, goal_threshold, r0, point_offset):
+    def __init__(self, num_sheeps, num_dogs, grid_size, sheep_positions, dog_states, goal_position, goal_threshold, r0, max_iters, point_offset):
         self.num_sheeps = num_sheeps
         self.num_dogs = num_dogs
         self.grid_size = grid_size
@@ -22,7 +22,6 @@ class Herding:
         for j in range(num_dogs):
             self.dog_states[j] = dog_states[j].reshape(1, 2)  # x, y
 
-       
         self.dt = 0.05
         self.r0 = r0
         self.r = r0
@@ -33,7 +32,7 @@ class Herding:
         self.k = 10.0
         self.kd = 0.1
         self.min_dist = 1e-3
-        self.max_iters = 1000
+        self.max_iters = max_iters
         self.actual_iters = self.max_iters
 
 
@@ -143,8 +142,7 @@ class Herding:
                 break
                 
             delta_new = delta - f_val / f_prime_val
-            
-            # Keep delta within bounds (0, 2pi)
+ 
             delta_new = np.clip(delta_new, 0, 2*np.pi)
             
             if np.abs(delta_new - delta) < 1e-8:  # Convergence check
@@ -291,6 +289,7 @@ class Herding:
 def main():
     num_sheep = 10
     num_dogs = 4
+    max_iters = 2000
     grid_size = 30.0
 
     sheep_positions = np.random.normal(loc=grid_size/2, scale=0.6, size=(num_sheep, 1, 2))
@@ -299,7 +298,7 @@ def main():
     goal_threshold = 2.5
     r0 = 3.0
 
-    herding_env = Herding(num_sheep, num_dogs, grid_size, sheep_positions, dog_states, goal_position, goal_threshold, r0, point_offset=0.6)
+    herding_env = Herding(num_sheep, num_dogs, grid_size, sheep_positions, dog_states, goal_position, goal_threshold, r0, max_iters, point_offset=0.6)
     herding_env.steps()
     herding_env.animate()
 
