@@ -285,6 +285,7 @@ class Herding:
     
         ani = animation.FuncAnimation(fig, update, frames=self.actual_iters, init_func=init, blit=True, interval=50)
         plt.show()
+        ani.save('herding_simulation.gif', writer='pillow')
 
 
 def main():
