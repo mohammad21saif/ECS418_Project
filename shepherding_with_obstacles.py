@@ -53,6 +53,12 @@ class Herding:
 
 
     def steps(self):
+        '''
+        Run the herding simulation for a maximum number of iterations or until the goal is reached.
+
+        Returns:
+            None
+        '''
         for i in range(self.max_iters):
             s_dot = self.sheep_dynamics()
 
@@ -84,6 +90,12 @@ class Herding:
 
 
     def controller_for_p_dot(self):
+        '''
+        Compute the desired velocity for the sheep herd's center of mass.
+
+        Returns:
+            p_dot (np.ndarray): Desired velocity vector for the sheep herd's center of mass.
+        '''
         s = self.sheep_mean[-1]
         qx = np.array([np.cos(self.phi), np.sin(self.phi)])
         p = s + self.point_offset * qx
@@ -93,6 +105,16 @@ class Herding:
 
 
     def get_ideal_heading_vel(self, p_dot):
+        '''
+        Compute the ideal heading and velocity for the sheep herd based on the desired velocity.
+
+        Args:
+            p_dot (np.ndarray): Desired velocity vector for the sheep herd's center of mass.
+
+        Returns:
+            phi_ideal (float): Ideal heading angle for the sheep herd.
+            v_ideal (np.ndarray): Ideal velocity vector for the sheep herd.
+        '''
         # phi_ideal = np.arctan2(self.goal_position[1] - self.sheep_mean[1], self.goal_position[0] - self.sheep_mean[0])
         # v_ideal = np.array([p_dot[0] * np.cos(phi_ideal), p_dot[1] * np.sin(phi_ideal)])
         phi_ideal = np.arctan2(p_dot[1], p_dot[0])
@@ -104,6 +126,16 @@ class Herding:
 
 
     def ideal_delta_star(self, phi_ideal, v_ideal):
+        '''
+        Compute the ideal angular positions (delta_j*) for the dogs around the sheep herd.
+
+        Args:
+            phi_ideal (float): Ideal heading angle for the sheep herd.
+            v_ideal (np.ndarray): Ideal velocity vector for the sheep herd.     
+
+        Returns:
+            delta_j (np.ndarray): Ideal angular positions for each dog.
+        '''
         m = self.num_dogs
         r = self.r
         
@@ -175,6 +207,16 @@ class Herding:
     
 
     def get_ideal_dog_positions(self, ideal_deltaj_star, ideal_heading):
+        '''
+        Compute the ideal positions for the dogs around the sheep herd.
+
+        Args:
+            ideal_deltaj_star (np.ndarray): Ideal angular positions for each dog.
+            ideal_heading (float): Ideal heading angle for the sheep herd.
+
+        Returns:
+            ideal_dog_positions (np.ndarray): Ideal positions for each dog.
+        '''
         ideal_dog_positions = np.zeros((self.num_dogs, 2))
         sheep_mean = self.sheep_mean[-1]
         for j in range(self.num_dogs):
@@ -197,6 +239,12 @@ class Herding:
     #     return s_dot
 
     def sheep_dynamics(self):
+        '''
+        Compute the dynamics of the sheep based on repulsion from dogs and flocking behavior.
+
+        Returns:
+            s_dot (np.ndarray): Velocity vectors for each sheep.
+        '''
         s_dot = np.zeros((self.num_sheeps, 2))
         cohesion_strength = 0.05
         separation_strength = 0.2
@@ -249,6 +297,15 @@ class Herding:
 
 
     def r_dot_controller(self, s_dot):
+        '''
+        Compute the rate of change of the radius (r_dot) for the sheep herd.
+
+        Args:
+            s_dot (np.ndarray): Velocity vectors for each sheep.    
+
+        Returns:
+            r_dot (float): Rate of change of the radius.
+        '''
         r_dot = (self.r0 - self.r)
         for i in range(self.num_sheeps):
             r1 = 2 * (self.sheep_positions[i][-1] - self.sheep_mean[-1])
@@ -260,6 +317,15 @@ class Herding:
 
 
     def tracking_controller(self, ideal_dog_position):
+        '''
+        Compute the tracking controller for the dogs to move towards their ideal positions.
+
+        Args:
+            ideal_dog_position (np.ndarray): Ideal positions for each dog.
+
+        Returns:
+            d_dot (np.ndarray): Velocity vectors for each dog.
+        '''
         d_dot = np.zeros((self.num_dogs, 2))
         for j in range(self.num_dogs):
             d_dot[j] = self.kd * (ideal_dog_position[j] - self.dog_states[j][-1])
@@ -276,6 +342,21 @@ class Herding:
 
         circle = plt.Circle((self.goal_position[0], self.goal_position[1]), self.goal_threshold, color='g', fill=False, linestyle='--')
         ax.add_artist(circle)
+
+        if self.square_obstacles is not None:
+            for pos, side_length in self.square_obstacles:
+                square = plt.Rectangle((pos[0] - side_length/2, pos[1] - side_length/2), side_length, side_length, color='gray')
+                ax.add_artist(square)
+        
+        if self.rectangle_obstacles is not None:
+            for pos, dims in self.rectangle_obstacles:
+                rectangle = plt.Rectangle((pos[0] - dims[0]/2, pos[1] - dims[1]/2), dims[0], dims[1], color='gray')
+                ax.add_artist(rectangle)
+
+        if self.circle_obstacles is not None:
+            for pos, radius in self.circle_obstacles:
+                circle = plt.Circle((pos[0], pos[1]), radius, color='gray')
+                ax.add_artist(circle)
 
         def init():
             for sheep_plot in sheep_plots:
