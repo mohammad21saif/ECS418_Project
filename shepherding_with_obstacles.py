@@ -467,11 +467,9 @@ def is_goal_reached():
 
 
 def generate_intermediate_goals(dog_states, sheep_positions, rectangle_obstacles, grid_size, resolution, safety_margin):
-    # compute start as current sheep mean
     start_sheep_mean = np.mean(sheep_positions, axis=0).reshape(1, 2)
     start = tuple(start_sheep_mean[0])
 
-    # define goal as (0,0) final (same as original)
     goal = (0.0, 0.0)
     print(f"Computing A* path from start {start} to goal {goal}...")
     path = astar.find_path(start=start,
@@ -481,7 +479,6 @@ def generate_intermediate_goals(dog_states, sheep_positions, rectangle_obstacles
                            distance_between_fnct=distance_between(),
                            is_goal_reached_fnct=is_goal_reached(),
                            )
-    # astar.find_path often returns a SearchNode path or list of tuples; convert to list of 2D tuples
     if path is None:
         return []
     waypoints = []
@@ -511,7 +508,7 @@ def main():
     dog_states = np.random.normal(loc=(25.0, 30.0), scale=0.5, size=(num_dogs, 1, 2))
 
     resolution = 5.0
-    safety_margin = 1.0
+    safety_margin = 4.0
 
     intermediate_goals = generate_intermediate_goals(dog_states, sheep_positions, rectangle_obstacles, grid_size, resolution, safety_margin)
     
