@@ -536,15 +536,12 @@ def main():
                           point_offset,
                           rectangle_obstacles)
     
-    print("Starting herding simulation...")
     print(f"Initial sheep mean position: {herding_env.sheep_mean}")
     print(f"Goal position: {goal_position}")
-    print(f"Distance to goal: {np.linalg.norm(herding_env.sheep_mean - goal_position):.2f}")
     
     herding_env.steps()
     
     print(f"\nFinal sheep mean position: {herding_env.sheep_mean}")
-    print(f"Final distance to goal: {np.linalg.norm(herding_env.sheep_mean - goal_position):.2f}")
     
     herding_env.animate()
 
