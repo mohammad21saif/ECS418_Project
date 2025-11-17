@@ -118,7 +118,8 @@ class Herding:
     def controller_for_p_dot(self):
         '''
         Compute the desired velocity for the point offset p.
-        Following equation (15) from the paper: ṗ = -kp
+        Following equation (15) from the paper: ṗ = -kp.
+        For intermediate goals, p -> p - current goal_position.
         '''
         s = self.sheep_mean
         qx = np.array([np.cos(self.phi), np.sin(self.phi)])
