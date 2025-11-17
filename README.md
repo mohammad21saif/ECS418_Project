@@ -26,7 +26,7 @@ python shepherding_with_obstacles.py
 
 1. Clone the repository
 3. Install dependencies: `pip install -r requirements.txt`
-4. Run the program: `python shepherding.py`
+4. Run the program: `python shepherding.py` or `shepherding_with_obstacles.py`.
 5. Number of sheep, shepherds, and iterations can be adjusted in `shepherding.py` and `shepherding_with_obstacles.py`.
 
 ## GIF Output
