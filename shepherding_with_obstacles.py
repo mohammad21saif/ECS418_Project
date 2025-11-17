@@ -332,7 +332,6 @@ class Herding:
         for j in range(self.num_dogs):
             d_dot[j] = self.kd * (ideal_dog_position[j] - self.dog_states[j][-1])
 
-        # Add obstacle repulsion to dog motion
         for j in range(self.num_dogs):
             d_dot[j] += self.obstacle_repulsion(self.dog_states[j][-1])
 
