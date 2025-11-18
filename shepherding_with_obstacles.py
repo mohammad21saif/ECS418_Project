@@ -1,4 +1,4 @@
-import numpy as np
+import numpy as np 
 import matplotlib.pyplot as plt
 from matplotlib import animation
 import astar
@@ -152,9 +152,11 @@ class Herding:
         r = self.r
 
         denominator_term = (2 - 2 * m)
-        if m < 2 or denominator_term == 0:
-            print("Error: Herding model requires at least 2 dogs (m >= 2).")
-            return np.zeros(self.num_dogs)
+        # if m < 2 or denominator_term == 0:
+        #     print("Error: Herding model requires at least 2 dogs (m >= 2).")
+        #     return np.zeros(self.num_dogs)
+        if m==1:
+            return np.array([0.0])
 
         A = m / denominator_term
         B = 1 / denominator_term
@@ -205,6 +207,12 @@ class Herding:
         '''
         Compute the ideal positions for the dogs around the sheep herd.
         '''
+        if self.num_dogs == 1:
+            sheep_mean = self.sheep_mean
+            direction = np.array([np.cos(ideal_heading), np.sin(ideal_heading)])
+            ideal_position = sheep_mean - self.r * direction  # Dog stays behind
+            return np.array([ideal_position])
+        
         ideal_dog_positions = np.zeros((self.num_dogs, 2))
         sheep_mean = self.sheep_mean
 
@@ -492,7 +500,7 @@ def generate_intermediate_goals(dog_states, sheep_positions, rectangle_obstacles
 
 def main():
     num_sheep = 10
-    num_dogs = 4
+    num_dogs = 1
     max_iters = 10000
     grid_size = 30.0
     point_offset = 0.6
